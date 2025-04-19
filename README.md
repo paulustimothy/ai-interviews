@@ -50,15 +50,12 @@ An AI-powered platform for preparing interviews, built with Next.js and Firebase
 3. Create a `.env.local` file with your Firebase credentials
 
    ```
-   # Firebase Config
    FIREBASE_PROJECT_ID=
    FIREBASE_PRIVATE_KEY=
    FIREBASE_CLIENT_EMAIL=
-
-   # Google Config
+   
    GOOGLE_GENERATIVE_AI_API_KEY=
 
-   # Vapi Config
    NEXT_PUBLIC_VAPI_WORKFLOW_ID=
    NEXT_PUBLIC_VAPI_WEB_TOKEN
    ```
