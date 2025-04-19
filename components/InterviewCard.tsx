@@ -4,8 +4,9 @@ import { Button } from "@/components/ui/button";
 import { getRandomInterviewCover } from "@/lib/utils";
 import Link from "next/link";
 import DisplayTechIcons from "./DisplayTechIcons";
+import { getFeedbackByInterviewId } from "@/lib/actions/general.action";
 
-const InterviewCard = ({
+const InterviewCard = async ({
   id,
   userId,
   role,
@@ -14,7 +15,10 @@ const InterviewCard = ({
   createdAt,
 }: InterviewCardProps) => {
   // this means that the interview is not finalized
-  const feedback = null as Feedback | null;
+  const feedback =
+    userId && id
+      ? await getFeedbackByInterviewId({ interviewId: id, userId })
+      : null;
   // /mix/gi.test(type) checks if the type contains the word "mix"
   const normalizedType = /mix/gi.test(type) ? "Mixed" : type;
   const formattedDate = dayjs(
