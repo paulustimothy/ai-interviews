@@ -19,7 +19,7 @@ interface SavedMessage {
   role: "user" | "system" | "assistant";
   content: string;
 }
-//TODO learn all of this
+
 const Agent = ({
   userName,
   userId,
@@ -66,24 +66,22 @@ const Agent = ({
     };
   }, []);
 
-  const handleGenerateFeedback = async (messages: SavedMessage[]) => {
-    console.log("Generate feedback here");
-
-    const { success, feedbackId: id } = await createFeedback({
-      interviewId: interviewId!,
-      userId: userId!,
-      transcript: messages,
-    });
-
-    if (success && id) {
-      router.push(`/interview/${interviewId}/feedback`);
-    } else {
-      console.log("Error generating feedback");
-      router.push("/");
-    }
-  };
-
   useEffect(() => {
+    const handleGenerateFeedback = async (messages: SavedMessage[]) => {
+      const { success, feedbackId: id } = await createFeedback({
+        interviewId: interviewId!,
+        userId: userId!,
+        transcript: messages,
+      });
+
+      if (success && id) {
+        router.push(`/interview/${interviewId}/feedback`);
+      } else {
+        console.log("Error generating feedback");
+        router.push("/");
+      }
+    };
+
     if (callStatus === CallStatus.FINISHED) {
       if (type === "generate") {
         router.push("/");
@@ -91,7 +89,7 @@ const Agent = ({
         handleGenerateFeedback(messages);
       }
     }
-  }, [messages, callStatus, type, userId]);
+  }, [messages, callStatus, interviewId, router, type, userId]);
 
   const handleCall = async () => {
     setCallStatus(CallStatus.CONNECTING);

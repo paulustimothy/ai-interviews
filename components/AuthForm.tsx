@@ -29,7 +29,11 @@ const authFormSchema = (type: FormType) => {
 const AuthForm = ({ type }: { type: FormType }) => {
   const router = useRouter();
   const formSchema = authFormSchema(type);
+  // z.infer is used to extract Typescript type of the form schema
+  // typeof formSchema references the formSchema object
+  // this code will converts the formSchema object into a TypeScript type
   const form = useForm<z.infer<typeof formSchema>>({
+    // resolver is used to validate the form
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",

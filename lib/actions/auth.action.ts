@@ -1,5 +1,6 @@
 "use server"; // we use this to prevent the action from being called on the client side
 import { auth, db } from "@/firebase/admin";
+import { FirebaseAuthError } from "firebase-admin/auth";
 import { cookies } from "next/headers";
 
 const ONE_WEEK = 60 * 60 * 24 * 7;
@@ -25,10 +26,13 @@ export async function signUp(params: SignUpParams) {
       success: true,
       message: "User created successfully",
     };
-  } catch (error: any) {
+  } catch (error) {
     console.log("Error signing up", error);
 
-    if (error.code === "auth/email-already-exists") {
+    if (
+      error instanceof FirebaseAuthError &&
+      error.code === "auth/email-already-exists"
+    ) {
       return {
         success: false,
         message: "This emailis already in use",
@@ -66,6 +70,16 @@ export async function signIn(params: SignInParams) {
   }
 }
 
+export async function signOut() {
+  const cookieStore = await cookies();
+  cookieStore.delete("session");
+
+  return {
+    success: true,
+    message: "Signed out successfully",
+  };
+}
+
 export async function setSessionCookie(idToken: string) {
   const cookieStore = await cookies();
 
@@ -89,6 +103,7 @@ export async function getCurrentUser(): Promise<User | null> {
   if (!sessionCookie) return null;
 
   try {
+    // verify the session cookie to ensure it's valid
     const decodedClaims = await auth.verifySessionCookie(sessionCookie, true);
 
     const userRecord = await db

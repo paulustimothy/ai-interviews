@@ -1,24 +1,23 @@
 import InterviewCard from "@/components/InterviewCard";
 import { Button } from "@/components/ui/button";
-import { getCurrentUser } from "@/lib/actions/auth.action";
+import { getCurrentUser, signOut } from "@/lib/actions/auth.action";
 import {
   getInterviewByUserId,
   getLatestInterviews,
 } from "@/lib/actions/general.action";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
 
 const page = async () => {
   const user = await getCurrentUser();
 
   const [userInterviews, latestInterviews] = await Promise.all([
-    await getInterviewByUserId(user?.id!),
-    await getLatestInterviews({ userId: user?.id! }),
+    user?.id ? await getInterviewByUserId(user.id) : [],
+    user?.id ? await getLatestInterviews({ userId: user.id }) : [],
   ]);
 
-  const hasPastInterviews = userInterviews?.length > 0;
-  const hasUpcomingInterviews = latestInterviews?.length > 0;
+  const hasPastInterviews = (userInterviews?.length ?? 0) > 0;
+  const hasUpcomingInterviews = (latestInterviews?.length ?? 0) > 0;
 
   return (
     <>
@@ -63,6 +62,9 @@ const page = async () => {
             <p>No upcoming interviews</p>
           )}
         </div>
+        <Button className="btn-primary ml-auto" onClick={signOut}>
+          Sign Out
+        </Button>
       </section>
     </>
   );
