@@ -22,7 +22,7 @@ const InterviewCard = async ({
   // /mix/gi.test(type) checks if the type contains the word "mix"
   const normalizedType = /mix/gi.test(type) ? "Mixed" : type;
   const formattedDate = dayjs(
-    feedback?.createdAt || createdAt || Date.now()
+    feedback?.[0]?.createdAt || createdAt || Date.now()
   ).format("DD MMM YYYY");
 
   return (
@@ -51,11 +51,11 @@ const InterviewCard = async ({
               <p>{formattedDate}</p>
             </div>
             <div className="flex flex-row gap-2 items-center">
-              <p>{feedback?.totalScore || "---"}/100</p>
+              <p>{feedback?.[0]?.totalScore || "---"}/100</p>
             </div>
           </div>
           <p className="line-clamp-2 mt-5">
-            {feedback?.finalAssessment ||
+            {feedback?.[0]?.finalAssessment ||
               "You haven't taken this interview yet. Take it now to improve your skills."}
           </p>
         </div>
