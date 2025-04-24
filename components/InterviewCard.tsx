@@ -5,16 +5,18 @@ import { getRandomInterviewCover } from "@/lib/utils";
 import Link from "next/link";
 import DisplayTechIcons from "./DisplayTechIcons";
 import { getFeedbackByInterviewId } from "@/lib/actions/general.action";
+import { getCurrentUser } from "@/lib/actions/auth.action";
 
 const InterviewCard = async ({
   id,
-  userId,
   role,
   type,
   techstack,
   createdAt,
   language,
 }: InterviewCardProps) => {
+  const user = await getCurrentUser();
+  const userId = user?.id;
   // this means that the interview is not finalized
   const feedback =
     userId && id
