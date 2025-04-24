@@ -1,6 +1,6 @@
 "use server";
 
-import { feedbackSchema } from "@/constants";
+import { feedbackSchema, feedbackSchemaIND } from "@/constants";
 import { db } from "@/firebase/admin";
 import { google } from "@ai-sdk/google";
 import { generateObject } from "ai";
@@ -46,30 +46,18 @@ export async function getInterviewById(id: string): Promise<Interview | null> {
 }
 
 export async function createFeedback(params: CreateFeedbackParams) {
-  const { interviewId, userId, transcript } = params;
+  const { interviewId, userId, transcript, language } = params;
 
-  try {
-    const formattedTranscript = transcript
-      .map(
-        (item: { role: string; content: string }) =>
-          `- ${item.role}: ${item.content}\n`
-      )
-      .join("");
+  const formattedTranscript = transcript
+    .map(
+      (item: { role: string; content: string }) =>
+        `- ${item.role}: ${item.content}\n`
+    )
+    .join("");
 
-    const {
-      object: {
-        totalScore,
-        categoryScores,
-        strengths,
-        areasForImprovement,
-        finalAssessment,
-      },
-    } = await generateObject({
-      model: google("gemini-2.0-flash-001", {
-        structuredOutputs: false,
-      }),
-      schema: feedbackSchema,
-      prompt: `You are an AI interviewer analyzing a mock interview. Your task is to evaluate the candidate based on structured categories. Be thorough and detailed in your analysis. Don't be lenient with the candidate. If there are mistakes or areas for improvement, point them out.
+  const prompt =
+    language == "en"
+      ? `You are an AI interviewer analyzing a mock interview. Your task is to evaluate the candidate based on structured categories. Be thorough and detailed in your analysis. Don't be lenient with the candidate. If there are mistakes or areas for improvement, point them out.
         Transcript:
         ${formattedTranscript}
 
@@ -78,32 +66,102 @@ export async function createFeedback(params: CreateFeedbackParams) {
         - **Technical Knowledge**: Understanding of key concepts for the role.
         - **Problem-Solving**: Ability to analyze problems and propose solutions.
         - **Cultural & Role Fit**: Alignment with company values and job role.
-        - **Confidence & Clarity**: Confidence in responses, engagement, and clarity.
-        `,
-      system:
-        "You are a professional interviewer analyzing a mock interview. Your task is to evaluate the candidate based on structured categories",
-    });
+        - **Confidence & Clarity**: Confidence in responses, engagement, and clarity.`
+      : `Anda adalah pewawancara AI yang menganalisis wawancara tiruan. Tugas Anda adalah mengevaluasi kandidat berdasarkan kategori terstruktur. Lakukan analisis secara menyeluruh dan terperinci. Jangan bersikap lunak terhadap kandidat. Jika ada kesalahan atau area yang perlu diperbaiki, tunjukkan.
+        Transkrip:
 
-    const feedback = await db.collection("feedback").add({
-      interviewId,
-      userId,
-      totalScore,
-      categoryScores,
-      strengths,
-      areasForImprovement,
-      finalAssessment,
-      createdAt: new Date().toISOString(),
-    });
+        ${formattedTranscript}
 
-    return {
-      success: true,
-      feedbackId: feedback.id,
-    };
-  } catch (error) {
-    console.log("Error creating feedback", error);
-    return {
-      success: false,
-    };
+        Harap beri skor kandidat dari 0 hingga 100 di area berikut. Jangan tambahkan kategori selain yang disediakan:
+        - **Keterampilan Komunikasi**: Kejelasan, artikulasi, respons terstruktur.
+        - **Pengetahuan Teknis**: Pemahaman konsep utama untuk peran tersebut.
+        - **Pemecahan Masalah**: Kemampuan menganalisis masalah dan mengusulkan solusi.
+        - **Kesesuaian Budaya & Peran**: Keselarasan dengan nilai-nilai perusahaan dan peran pekerjaan.
+        - **Keyakinan & Kejelasan**: Keyakinan dalam respons, keterlibatan, dan kejelasan.`;
+
+  const system =
+    language === "en"
+      ? "You are a professional interviewer analyzing a mock interview. Your task is to evaluate the candidate based on structured categories"
+      : "Anda adalah pewawancara profesional yang menganalisis wawancara tiruan. Tugas Anda adalah mengevaluasi kandidat berdasarkan kategori terstruktur.";
+
+  if (language === "en") {
+    try {
+      const {
+        object: {
+          totalScore,
+          categoryScores,
+          strengths,
+          areasForImprovement,
+          finalAssessment,
+        },
+      } = await generateObject({
+        model: google("gemini-2.0-flash-001", {
+          structuredOutputs: false,
+        }),
+        schema: feedbackSchema,
+        prompt: prompt,
+        system: system,
+      });
+      const feedback = await db.collection("feedback").add({
+        interviewId,
+        userId,
+        totalScore,
+        categoryScores,
+        strengths,
+        areasForImprovement,
+        finalAssessment,
+        language,
+        createdAt: new Date().toISOString(),
+      });
+      return {
+        success: true,
+        feedbackId: feedback.id,
+      };
+    } catch (error) {
+      console.log("Error creating English feedback", error);
+      return {
+        success: false,
+      };
+    }
+  } else {
+    try {
+      const {
+        object: {
+          totalScore,
+          categoryScores,
+          strengths,
+          areasForImprovement,
+          finalAssessment,
+        },
+      } = await generateObject({
+        model: google("gemini-2.0-flash-001", {
+          structuredOutputs: false,
+        }),
+        schema: feedbackSchemaIND,
+        prompt,
+        system,
+      });
+      const feedback = await db.collection("feedback").add({
+        interviewId,
+        userId,
+        totalScore,
+        categoryScores,
+        strengths,
+        areasForImprovement,
+        finalAssessment,
+        language,
+        createdAt: new Date().toISOString(),
+      });
+      return {
+        success: true,
+        feedbackId: feedback.id,
+      };
+    } catch (error) {
+      console.log("Error creating Indonesian feedback", error);
+      return {
+        success: false,
+      };
+    }
   }
 }
 

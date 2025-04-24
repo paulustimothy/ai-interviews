@@ -13,6 +13,7 @@ const InterviewCard = async ({
   type,
   techstack,
   createdAt,
+  language,
 }: InterviewCardProps) => {
   // this means that the interview is not finalized
   const feedback =
@@ -52,6 +53,9 @@ const InterviewCard = async ({
             </div>
             <div className="flex flex-row gap-2 items-center">
               <p>{feedback?.[0]?.totalScore || "---"}/100</p>
+            </div>
+            <div className="flex flex-row gap-2 items-center">
+              <span>{language === "id" ? "ID" : "EN"}</span>
             </div>
           </div>
           <p className="line-clamp-2 mt-5">

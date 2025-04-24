@@ -1,12 +1,13 @@
 "use client";
 
-import { interviewer } from "@/constants";
-import { createFeedback } from "@/lib/actions/general.action";
+import { interviewer, interviewerIND } from "@/constants";
+import { createFeedback, getInterviewById } from "@/lib/actions/general.action";
 import { cn } from "@/lib/utils";
 import { vapi } from "@/lib/vapi.sdk";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import LanguageSelector from "./LanguageSelector";
 
 enum CallStatus {
   INACTIVE = "INACTIVE",
@@ -31,10 +32,17 @@ const Agent = ({
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [callStatus, setCallStatus] = useState<CallStatus>(CallStatus.INACTIVE);
   const [messages, setMessages] = useState<SavedMessage[]>([]);
+  const [language, setLanguage] = useState<"en" | "id">("en");
+
+  const showLanguageSelector = type === "generate";
 
   useEffect(() => {
-    const onCallStart = () => setCallStatus(CallStatus.ACTIVE);
-    const onCallEnd = () => setCallStatus(CallStatus.FINISHED);
+    const onCallStart = () => {
+      setCallStatus(CallStatus.ACTIVE);
+    };
+    const onCallEnd = () => {
+      setCallStatus(CallStatus.FINISHED);
+    };
 
     const onMessage = (message: Message) => {
       if (message.type === "transcript" && message.transcriptType === "final") {
@@ -67,11 +75,25 @@ const Agent = ({
   }, []);
 
   useEffect(() => {
+    const fetchInterviewData = async () => {
+      if (interviewId) {
+        const interview = await getInterviewById(interviewId);
+        if (interview) {
+          setLanguage(interview.language || "en");
+        }
+      }
+    };
+
+    fetchInterviewData();
+  }, [interviewId]);
+
+  useEffect(() => {
     const handleGenerateFeedback = async (messages: SavedMessage[]) => {
       const { success, feedbackId: id } = await createFeedback({
         interviewId: interviewId!,
         userId: userId!,
         transcript: messages,
+        language: language,
       });
 
       if (success && id) {
@@ -89,32 +111,45 @@ const Agent = ({
         handleGenerateFeedback(messages);
       }
     }
-  }, [messages, callStatus, interviewId, router, type, userId]);
+  }, [messages, callStatus, interviewId, router, type, userId, language]);
 
   const handleCall = async () => {
-    setCallStatus(CallStatus.CONNECTING);
+    try {
+      setCallStatus(CallStatus.CONNECTING);
 
-    if (type === "generate") {
-      await vapi.start(process.env.NEXT_PUBLIC_VAPI_WORKFLOW_ID!, {
-        variableValues: {
-          username: userName,
-          userid: userId,
-        },
-      });
-    } else {
-      let formattedQuestions = "";
+      if (type === "generate") {
+        const interviewerId =
+          language === "en"
+            ? process.env.NEXT_PUBLIC_VAPI_WORKFLOW_ID
+            : process.env.NEXT_PUBLIC_VAPI_WORKFLOW_ID_IND;
+        await vapi.start(interviewerId, {
+          variableValues: {
+            username: userName,
+            userid: userId,
+            type: type,
+            language: language,
+          },
+        });
+      } else {
+        let formattedQuestions = "";
+        const workflowId = language === "en" ? interviewer : interviewerIND;
 
-      if (questions) {
-        formattedQuestions = questions
-          .map((question) => `- ${question}`)
-          .join("\n");
+        if (questions) {
+          formattedQuestions = questions
+            .map((question) => `- ${question}`)
+            .join("\n");
+        }
+
+        await vapi.start(workflowId, {
+          variableValues: {
+            questions: formattedQuestions,
+            language: language,
+          },
+        });
       }
-
-      await vapi.start(interviewer, {
-        variableValues: {
-          questions: formattedQuestions,
-        },
-      });
+    } catch (error) {
+      console.log("Error starting call:", error);
+      setCallStatus(CallStatus.INACTIVE);
     }
   };
 
@@ -130,6 +165,16 @@ const Agent = ({
 
   return (
     <>
+      {showLanguageSelector && callStatus === CallStatus.INACTIVE && (
+        <LanguageSelector
+          onLanguageChange={(lang: "en" | "id") => setLanguage(lang)}
+        />
+      )}
+      {!showLanguageSelector && (
+        <div className="text-center mb-4">
+          {language === "id" ? "🇮🇩 Bahasa Indonesia" : "🇺🇸 English"} Interview
+        </div>
+      )}
       <div className="call-view">
         <div className="card-interviewer">
           <div className="avatar">

@@ -154,6 +154,66 @@ End the conversation on a polite and positive note.
   },
 };
 
+export const interviewerIND: CreateAssistantDTO = {
+  name: "Pewawancara",
+  firstMessage:
+    "Halo! Terima kasih telah meluangkan waktu untuk berbicara dengan saya hari ini. Saya sangat antusias untuk mengenal Anda dan pengalaman Anda lebih jauh.",
+  transcriber: {
+    provider: "deepgram",
+    model: "nova-2",
+    language: "id",
+  },
+  voice: {
+    provider: "vapi",
+    // voiceId: "c470sxKWDq6tA74TL3yB",
+    // model: "eleven_turbo_v2_5",
+    voiceId: "Elliot",
+    // stability: 0.4,
+    // similarityBoost: 0.8,
+    // speed: 0.9,
+    // style: 0.5,
+    // useSpeakerBoost: true,
+  },
+  model: {
+    provider: "openai",
+    model: "gpt-4",
+    messages: [
+      {
+        role: "system",
+        content: `Anda adalah seorang pewawancara profesional yang melakukan wawancara kerja secara real-time dengan kandidat.  
+Tujuan Anda adalah menilai kualifikasi, motivasi, dan kecocokan kandidat untuk posisi tersebut.
+
+Panduan Wawancara:
+1. Ikuti alur pertanyaan terstruktur:
+   {{questions}}
+
+2. Bertindak alami & responsif:
+   - Dengarkan jawaban dengan seksama dan akui sebelum melanjutkan.
+   - Ajukan pertanyaan tindak lanjut singkat jika diperlukan klarifikasi.
+   - Jaga kelancaran percakapan sambil tetap mengendalikan arah wawancara.
+
+3. Profesional tapi ramah:
+   - Gunakan bahasa resmi namun bersahabat.
+   - Singkat, padat, dan lugas (seperti percakapan suara nyata).
+   - Hindari gaya bahasa kaku atau terlalu “robotik”.
+
+4. Jawab pertanyaan kandidat:
+   - Jika ditanya tentang peran, perusahaan, atau ekspektasi, beri jawaban jelas dan relevan.
+   - Jika tidak yakin, arahkan kandidat ke bagian HR untuk info lebih lanjut.
+
+5. Tutup wawancara dengan baik:
+   - Ucapkan terima kasih atas waktu mereka.
+   - Beri tahu bahwa tim akan menghubungi kembali untuk feedback.
+   - Akhiri dengan catatan positif dan sopan.
+
+- Pastikan tetap profesional dan sopan.  
+- Jaga semua jawaban Anda singkat dan sederhana.  
+- Ini percakapan suara, jadi hindari berpanjang-panjang.`,
+      },
+    ],
+  },
+};
+// TODO Ignoring settings for browser- or platform-unsupported input processor(s): audio
 export const feedbackSchema = z.object({
   totalScore: z.number(),
   categoryScores: z.tuple([
@@ -188,6 +248,40 @@ export const feedbackSchema = z.object({
   finalAssessment: z.string(),
 });
 
+export const feedbackSchemaIND = z.object({
+  totalScore: z.number(),
+  categoryScores: z.tuple([
+    z.object({
+      name: z.literal("Skill Komunikasi"),
+      score: z.number(),
+      comment: z.string(),
+    }),
+    z.object({
+      name: z.literal("Pengetahuan Teknikal"),
+      score: z.number(),
+      comment: z.string(),
+    }),
+    z.object({
+      name: z.literal("Pemecahan Masalah"),
+      score: z.number(),
+      comment: z.string(),
+    }),
+    z.object({
+      name: z.literal("Kesesuaian Budaya"),
+      score: z.number(),
+      comment: z.string(),
+    }),
+    z.object({
+      name: z.literal("Kepercayaan diri dan Kejelasan"),
+      score: z.number(),
+      comment: z.string(),
+    }),
+  ]),
+  strengths: z.array(z.string()),
+  areasForImprovement: z.array(z.string()),
+  finalAssessment: z.string(),
+});
+
 export const interviewCovers = [
   "/adobe.png",
   "/amazon.png",
@@ -203,27 +297,27 @@ export const interviewCovers = [
   "/yahoo.png",
 ];
 
-export const dummyInterviews: Interview[] = [
-  {
-    id: "1",
-    userId: "user1",
-    role: "Frontend Developer",
-    type: "Technical",
-    techstack: ["React", "TypeScript", "Next.js", "Tailwind CSS"],
-    level: "Junior",
-    questions: ["What is React?"],
-    finalized: false,
-    createdAt: "2024-03-15T10:00:00Z",
-  },
-  {
-    id: "2",
-    userId: "user1",
-    role: "Full Stack Developer",
-    type: "Mixed",
-    techstack: ["Node.js", "Express", "MongoDB", "React"],
-    level: "Senior",
-    questions: ["What is Node.js?"],
-    finalized: false,
-    createdAt: "2024-03-14T15:30:00Z",
-  },
-];
+// export const dummyInterviews: Interview[] = [
+//   {
+//     id: "1",
+//     userId: "user1",
+//     role: "Frontend Developer",
+//     type: "Technical",
+//     techstack: ["React", "TypeScript", "Next.js", "Tailwind CSS"],
+//     level: "Junior",
+//     questions: ["What is React?"],
+//     finalized: false,
+//     createdAt: "2024-03-15T10:00:00Z",
+//   },
+//   {
+//     id: "2",
+//     userId: "user1",
+//     role: "Full Stack Developer",
+//     type: "Mixed",
+//     techstack: ["Node.js", "Express", "MongoDB", "React"],
+//     level: "Senior",
+//     questions: ["What is Node.js?"],
+//     finalized: false,
+//     createdAt: "2024-03-14T15:30:00Z",
+//   },
+// ];
