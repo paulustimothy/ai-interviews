@@ -56,7 +56,6 @@ An AI-powered platform for preparing interviews, built with Next.js and Firebase
    
    GOOGLE_GENERATIVE_AI_API_KEY=
 
-   NEXT_PUBLIC_VAPI_WORKFLOW_ID=
    NEXT_PUBLIC_VAPI_PUBLIC_KEY=
    NEXT_PUBLIC_VAPI_WORKFLOW_ID_IND=
    NEXT_PUBLIC_VAPI_WORKFLOW_ID=
