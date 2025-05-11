@@ -123,7 +123,7 @@ const FeynmanAgent = ({
         const interviewerId =
           language == "en"
             ? process.env.NEXT_PUBLIC_VAPI_WORKFLOW_FEYNMAN_ID
-            : process.env.NEXT_PUBLIC_VAPI_WORKFLOW_FEYNMAN_ID;
+            : process.env.NEXT_PUBLIC_VAPI_WORKFLOW_FEYNMAN_ID_IND;
         await vapi.start(interviewerId, {
           variableValues: {
             username: userName,
