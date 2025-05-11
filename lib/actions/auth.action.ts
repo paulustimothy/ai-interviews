@@ -90,7 +90,7 @@ export async function setSessionCookie(idToken: string) {
   cookieStore.set("session", sessionCookie, {
     maxAge: ONE_WEEK,
     httpOnly: true, // prevents the cookie from being accessed by JavaScript
-    secure: process.env.NODE_ENV === "production", // only send the cookie over HTTPS in production
+    // secure: process.env.NODE_ENV === "production", // only send the cookie over HTTPS in production
     path: "/",
     sameSite: "lax", // only send the cookie over HTTPS in production
   });
