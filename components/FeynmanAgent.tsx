@@ -90,7 +90,7 @@ const FeynmanAgent = ({
   }, [feynmanId]);
 
   useEffect(() => {
-      const handleGenerateFeedback = async (messages: SavedMessage[]) => {
+    const handleGenerateFeedback = async (messages: SavedMessage[]) => {
       const { success, feynmanFeedbackId: id } = await createFeynmanFeedback({
         feynmanId: feynmanId!,
         userId: userId!,
@@ -121,7 +121,7 @@ const FeynmanAgent = ({
 
       if (type === "generate") {
         const interviewerId =
-          language == "en"
+          language === "en"
             ? process.env.NEXT_PUBLIC_VAPI_WORKFLOW_FEYNMAN_ID
             : process.env.NEXT_PUBLIC_VAPI_WORKFLOW_FEYNMAN_ID_IND;
         await vapi.start(interviewerId, {

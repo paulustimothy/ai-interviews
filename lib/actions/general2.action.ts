@@ -33,7 +33,6 @@ export async function getLatestFeynmanInterviews(
     .limit(limit)
     .get();
 
-  console.log("feynmans", feynmans.docs);
   return feynmans.docs.map((doc) => ({
     id: doc.id,
     ...doc.data(),

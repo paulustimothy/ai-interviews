@@ -6,24 +6,28 @@ import {
   getInterviewByUserId,
   getLatestInterviews,
 } from "@/lib/actions/general.action";
-import { getLatestFeynmanInterviews } from "@/lib/actions/general2.action";
+import {
+  getFeynmanInterviewsByUserId,
+  getLatestFeynmanInterviews,
+} from "@/lib/actions/general2.action";
 import Image from "next/image";
 import Link from "next/link";
 
 const page = async () => {
   const user = await getCurrentUser();
 
-  const [userInterviews, latestInterviews, latestFeynman] = await Promise.all([
-    user?.id ? await getInterviewByUserId(user.id) : [],
-    user?.id ? await getLatestInterviews({ userId: user.id }) : [],
-    user?.id ? await getLatestFeynmanInterviews({ userId: user.id }) : [],
-  ]);
+  const [userInterviews, latestInterviews, userFeynman, latestFeynman] =
+    await Promise.all([
+      user?.id ? await getInterviewByUserId(user.id) : [],
+      user?.id ? await getLatestInterviews({ userId: user.id }) : [],
+      user?.id ? await getFeynmanInterviewsByUserId(user.id) : [],
+      user?.id ? await getLatestFeynmanInterviews({ userId: user.id }) : [],
+    ]);
 
   const hasPastInterviews = (userInterviews?.length ?? 0) > 0;
+  const hasPastFeynman = (userFeynman?.length ?? 0) > 0;
   const hasUpcomingInterviews = (latestInterviews?.length ?? 0) > 0;
   const hasUpcomingFeynman = (latestFeynman?.length ?? 0) > 0;
-  console.log("latestFeynman", latestFeynman);
-  console.log("hasUpcomingFeynman", hasUpcomingFeynman);
   return (
     <>
       <section className="card-cta">
@@ -74,6 +78,18 @@ const page = async () => {
         </div>
       </section>
 
+      <section className="flex flex-col gap-6 mt-8">
+        <h2>Your Feynman lessons</h2>
+        <div className="interviews-section">
+          {hasPastFeynman ? (
+            userFeynman?.map((feynman) => (
+              <FeynmanCard {...feynman} key={feynman.id} />
+            ))
+          ) : (
+            <p>You haven&apos;t taken any Feynman lessons yet</p>
+          )}
+        </div>
+      </section>
       <section className="flex flex-col gap-6 mt-8">
         <h2>Take a Feynman lesson</h2>
         <div className="interviews-section">
