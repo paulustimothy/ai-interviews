@@ -90,7 +90,7 @@ const FeynmanAgent = ({
   }, [feynmanId]);
 
   useEffect(() => {
-    const handleGenerateFeedback = async (messages: SavedMessage[]) => {
+      const handleGenerateFeedback = async (messages: SavedMessage[]) => {
       const { success, feynmanFeedbackId: id } = await createFeynmanFeedback({
         feynmanId: feynmanId!,
         userId: userId!,

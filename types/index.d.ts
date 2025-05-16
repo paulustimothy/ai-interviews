@@ -135,3 +135,12 @@ interface GetFeedbackByFeynmanIdParams {
   feynmanId: string;
   userId: string;
 }
+
+interface FeynmanCardProps {
+  id?: string;
+  topic: string;
+  goal: string;
+  difficulty: string;
+  createdAt?: string;
+  language?: "en" | "id";
+}

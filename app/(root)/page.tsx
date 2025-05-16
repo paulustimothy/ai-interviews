@@ -1,3 +1,4 @@
+import FeynmanCard from "@/components/FeynmanCard";
 import InterviewCard from "@/components/InterviewCard";
 import { Button } from "@/components/ui/button";
 import { getCurrentUser, signOut } from "@/lib/actions/auth.action";
@@ -5,20 +6,24 @@ import {
   getInterviewByUserId,
   getLatestInterviews,
 } from "@/lib/actions/general.action";
+import { getLatestFeynmanInterviews } from "@/lib/actions/general2.action";
 import Image from "next/image";
 import Link from "next/link";
 
 const page = async () => {
   const user = await getCurrentUser();
 
-  const [userInterviews, latestInterviews] = await Promise.all([
+  const [userInterviews, latestInterviews, latestFeynman] = await Promise.all([
     user?.id ? await getInterviewByUserId(user.id) : [],
     user?.id ? await getLatestInterviews({ userId: user.id }) : [],
+    user?.id ? await getLatestFeynmanInterviews({ userId: user.id }) : [],
   ]);
 
   const hasPastInterviews = (userInterviews?.length ?? 0) > 0;
   const hasUpcomingInterviews = (latestInterviews?.length ?? 0) > 0;
-
+  const hasUpcomingFeynman = (latestFeynman?.length ?? 0) > 0;
+  console.log("latestFeynman", latestFeynman);
+  console.log("hasUpcomingFeynman", hasUpcomingFeynman);
   return (
     <>
       <section className="card-cta">
@@ -67,10 +72,23 @@ const page = async () => {
             <p>No upcoming interviews</p>
           )}
         </div>
-        <Button className="btn-primary ml-auto" onClick={signOut}>
-          Sign Out
-        </Button>
       </section>
+
+      <section className="flex flex-col gap-6 mt-8">
+        <h2>Take a Feynman lesson</h2>
+        <div className="interviews-section">
+          {hasUpcomingFeynman ? (
+            latestFeynman?.map((feynman) => (
+              <FeynmanCard {...feynman} key={feynman.id} />
+            ))
+          ) : (
+            <p>No upcoming Feynman lessons</p>
+          )}
+        </div>
+      </section>
+      <Button className="btn-primary ml-auto" onClick={signOut}>
+        Sign Out
+      </Button>
     </>
   );
 };

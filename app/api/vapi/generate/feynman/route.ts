@@ -8,7 +8,7 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const { amount, userid, language, topic, goal, difficulty } =
+  const { amount, userId, language, topic, goal, difficulty } =
     await request.json();
 
   try {
@@ -49,7 +49,7 @@ Terima kasih! <3
       questions: JSON.parse(questions),
       finalized: true,
       language,
-      userid,
+      userId,
       coverImage: getRandomInterviewCover(),
       createdAt: new Date().toISOString(),
     };
