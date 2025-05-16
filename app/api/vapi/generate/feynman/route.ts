@@ -49,7 +49,7 @@ Terima kasih! <3
       questions: JSON.parse(questions),
       finalized: true,
       language,
-      userid,
+      userId: userid,
       coverImage: getRandomInterviewCover(),
       createdAt: new Date().toISOString(),
     };
