@@ -7,6 +7,7 @@ An AI-powered platform for preparing interviews, built with Next.js and Firebase
 ## ✨ Features
 
 - 🤖 **AI-Powered Practice** - Train with real interview questions
+- 🤖 **AI-Powered Feynman Study Session** - Study your topic in a Feynman way
 - 💬 **Instant Feedback** - Get immediate analysis of your responses
 - 🔥 **Firebase Integration** - Secure authentication and data storage
 - 📱 **Responsive Design** - Works on all devices
@@ -57,8 +58,10 @@ An AI-powered platform for preparing interviews, built with Next.js and Firebase
    GOOGLE_GENERATIVE_AI_API_KEY=
 
    NEXT_PUBLIC_VAPI_WEB_TOKEN= (#PUBLIC_KEY)
-   NEXT_PUBLIC_VAPI_WORKFLOW_ID_IND=
    NEXT_PUBLIC_VAPI_WORKFLOW_ID=
+   NEXT_PUBLIC_VAPI_WORKFLOW_ID_IND=
+   NEXT_PUBLIC_VAPI_WORKFLOW_FEYNMAN_ID=
+   NEXT_PUBLIC_VAPI_WORKFLOW_FEYNMAN_ID_IND=
 
    NEXT_PUBLIC_BASE_URL=
    ```
