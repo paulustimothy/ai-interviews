@@ -1,6 +1,7 @@
 interface Feedback {
   id: string;
   interviewId: string;
+  feynmanId?: string;
   totalScore: number;
   categoryScores: Array<{
     name: string;
@@ -11,6 +12,7 @@ interface Feedback {
   areasForImprovement: string[];
   finalAssessment: string;
   createdAt: string;
+  language: "en" | "id";
 }
 
 interface Interview {
@@ -55,6 +57,8 @@ interface AgentProps {
   userId?: string;
   interviewId?: string;
   feedbackId?: string;
+  feynmanId?: string;
+  feynmanFeedbackId?: string;
   type: "generate" | "interview";
   questions?: string[];
   language?: "en" | "id";
@@ -100,4 +104,43 @@ interface InterviewFormProps {
 
 interface TechIconProps {
   techStack: string[];
+}
+
+interface Feynman {
+  id: string;
+  topic: string;
+  goal: string;
+  questions: string[];
+  difficulty: string;
+  createdAt: string;
+  userId: string;
+  finalized: boolean;
+  language: "en" | "id";
+}
+
+interface GetLatestFeynmanParams {
+  userId: string;
+  limit?: number;
+}
+
+interface CreateFeynmanFeedbackParams {
+  feynmanId: string;
+  userId: string;
+  transcript: { role: string; content: string }[];
+  feynmanFeedbackId?: string;
+  language: "en" | "id";
+}
+
+interface GetFeedbackByFeynmanIdParams {
+  feynmanId: string;
+  userId: string;
+}
+
+interface FeynmanCardProps {
+  id?: string;
+  topic: string;
+  goal: string;
+  difficulty: string;
+  createdAt?: string;
+  language?: "en" | "id";
 }

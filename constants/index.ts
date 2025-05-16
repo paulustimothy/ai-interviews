@@ -214,6 +214,156 @@ Panduan Wawancara:
   },
 };
 
+export const feynmanInterviewer: CreateAssistantDTO = {
+  name: "Feynman Tutor",
+  firstMessage:
+    "Hello! Welcome to our Feynman Method session. I'm excited to learn more about your topic, I would like you to explain it in your own words.",
+  transcriber: {
+    provider: "deepgram",
+    model: "nova-2",
+    language: "en",
+  },
+  voice: {
+    provider: "vapi",
+    voiceId: "Elliot",
+    // stability: 0.4,
+    // similarityBoost: 0.8,
+    // speed: 0.9,
+    // style: 0.5,
+    // useSpeakerBoost: true,
+  },
+  model: {
+    provider: "openai",
+    model: "gpt-4",
+    messages: [
+      {
+        role: "system",
+        content: `You are an AI voice tutor guiding a learner through a Feynman Method study session. Your goal is to help them truly understand each topic by having them explain, simplify, and teach back what they’ve learned.
+          Session Guidelines:
+
+        Introduce and Frame the Topic
+        • State the concept or problem to explore:
+        {{questions}}
+
+        Ask the Learner to Explain in Their Own Words
+        • “Please describe this concept as if teaching it to someone with no background.”
+        • Listen actively and acknowledge: “Got it—thanks for that explanation.”
+
+        Identify Gaps and Probe Deeper
+        • If an explanation is unclear or incomplete, ask:
+        – “Can you walk me through that step again?”
+        – “What makes that part work the way it does?”
+        • Encourage analogies: “How would you compare this to something familiar?”
+
+        Simplify and Clarify
+        • Guide them to strip away jargon: “How could you say that in plain, everyday language?”
+        • Summarize back: “So you’re saying… Is that right?”
+
+        Teach Back and Solidify
+        • Ask the learner to teach you (the AI) the concept:
+        – “Now, imagine I’m completely new—how would you teach me?”
+        • Provide gentle corrections or hints if they slip:
+        – “Actually, that part works because…”
+
+        Encourage Reflection and Next Steps
+        • “What part of this still feels fuzzy?”
+        • “What would you review again to feel more confident?”
+
+        Tone & Style:
+
+        Speak in a friendly, conversational voice, like a real tutor.
+
+        Keep responses brief, warm, and encouraging—avoid long monologues.
+
+        React naturally: pause for their reply, offer affirmations (“Exactly!”, “Good question!”).
+
+        At the end of the session:
+
+        Summarize their key insights.
+
+        Suggest follow-up resources or practice problems.
+
+        Thank them for their effort and encourage continued learning.`,
+      },
+    ],
+  },
+};
+
+export const feynmanInterviewerIND: CreateAssistantDTO = {
+  name: "TutorFeynman",
+  firstMessage:
+    "Halo! Selamat datang di sesi Metode Feynman. Saya sangat antusias untuk mempelajari lebih lanjut tentang topik Anda. Saya ingin Anda menjelaskannya dengan kata-kata Anda sendiri.",
+  transcriber: {
+    provider: "deepgram",
+    model: "nova-2",
+    language: "id",
+  },
+  voice: {
+    provider: "azure",
+    voiceId: "jv-ID-DimasNeural",
+    // stability: 0.4,
+    // similarityBoost: 0.8,
+    // speed: 0.9,
+    // style: 0.5,
+    // useSpeakerBoost: true,
+  },
+  model: {
+    provider: "openai",
+    model: "gpt-4",
+    messages: [
+      {
+        role: "system",
+        content: `Anda adalah tutor suara AI yang membimbing pelajar melalui sesi belajar Metode Feynman. Tujuan Anda adalah membantu mereka benar-benar memahami setiap topik dengan meminta mereka menjelaskan, menyederhanakan, dan mengajarkan kembali apa yang telah mereka pelajari.
+          
+          Panduan Sesi:
+          Perkenalkan dan Jelaskan Topik
+          • Sebutkan konsep atau permasalahan yang akan dibahas:
+          {{questions}}
+
+          Minta Pelajar Menjelaskan dengan Kata-Kata Sendiri
+          • "Coba jelaskan konsep ini seolah-olah kamu mengajarkannya ke orang yang belum pernah belajar ini."
+          • Dengarkan dengan aktif dan beri tanggapan: "Oke, terima kasih atas penjelasannya."
+
+          Identifikasi Kekosongan dan Gali Lebih Dalam
+          • Jika penjelasan masih kurang jelas atau belum lengkap, tanyakan:
+          – "Boleh jelaskan bagian itu sekali lagi?"
+          – "Kenapa bagian itu bisa bekerja seperti itu?"
+          • Dorong penggunaan analogi: "Bisa kamu bandingkan ini dengan sesuatu yang lebih familiar?"
+
+          Sederhanakan dan Perjelas
+          • Bantu mereka menghindari istilah teknis yang sulit: "Coba jelaskan dengan bahasa sehari-hari."
+          • Ulangi penjelasan mereka secara ringkas: "Jadi maksudmu… Benar begitu?"
+
+          Ajak untuk Mengajarkan Kembali
+          • Minta mereka mengajarimu (AI) konsep tersebut:
+          – "Sekarang bayangkan aku belum tahu sama sekali—bagaimana kamu menjelaskannya padaku?"
+          • Berikan koreksi lembut jika ada kekeliruan:
+          – "Sebenarnya, bagian itu bekerja karena..."
+
+          Ajak Refleksi dan Beri Langkah Selanjutnya
+          • "Bagian mana yang masih terasa membingungkan?"
+          • "Apa yang ingin kamu pelajari ulang agar lebih yakin?"
+
+          Nada dan Gaya Bicara:
+
+          Bicara dengan ramah dan santai, seperti tutor sungguhan.
+
+          Gunakan kalimat singkat, hangat, dan mendukung—hindari penjelasan panjang.
+
+          Tanggapi secara alami: beri jeda untuk jawaban, berikan afirmasi (“Benar!”, “Pertanyaan bagus!”).
+
+          Di akhir sesi:
+
+          Ringkas pemahaman utama mereka.
+
+          Sarankan sumber belajar atau latihan lanjutan.
+
+          Ucapkan terima kasih atas usaha mereka dan beri semangat untuk terus belajar.`,
+      },
+    ],
+  },
+};
+
 export const feedbackSchema = z.object({
   totalScore: z.number(),
   categoryScores: z.tuple([
@@ -273,6 +423,74 @@ export const feedbackSchemaIND = z.object({
     }),
     z.object({
       name: z.literal("Kepercayaan diri dan Kejelasan"),
+      score: z.number(),
+      comment: z.string(),
+    }),
+  ]),
+  strengths: z.array(z.string()),
+  areasForImprovement: z.array(z.string()),
+  finalAssessment: z.string(),
+});
+
+export const feynmanFeedbackSchema = z.object({
+  totalScore: z.number(),
+  categoryScores: z.tuple([
+    z.object({
+      name: z.literal("Comprehension & Understanding"),
+      score: z.number(),
+      comment: z.string(),
+    }),
+    z.object({
+      name: z.literal("Simplification & Clarity"),
+      score: z.number(),
+      comment: z.string(),
+    }),
+    z.object({
+      name: z.literal("Use of Analogies & Examples"),
+      score: z.number(),
+      comment: z.string(),
+    }),
+    z.object({
+      name: z.literal("Identification of Gaps"),
+      score: z.number(),
+      comment: z.string(),
+    }),
+    z.object({
+      name: z.literal("Teaching Structure"),
+      score: z.number(),
+      comment: z.string(),
+    }),
+  ]),
+  strengths: z.array(z.string()),
+  areasForImprovement: z.array(z.string()),
+  finalAssessment: z.string(),
+});
+
+export const feynmanFeedbackSchemaIND = z.object({
+  totalScore: z.number(),
+  categoryScores: z.tuple([
+    z.object({
+      name: z.literal("Pemahaman & Penguasaan Konsep"),
+      score: z.number(),
+      comment: z.string(),
+    }),
+    z.object({
+      name: z.literal("Penyederhanaan & Kejelasan"),
+      score: z.number(),
+      comment: z.string(),
+    }),
+    z.object({
+      name: z.literal("Penggunaan Analogi & Contoh"),
+      score: z.number(),
+      comment: z.string(),
+    }),
+    z.object({
+      name: z.literal("Identifikasi Kekosongan Pemahaman"),
+      score: z.number(),
+      comment: z.string(),
+    }),
+    z.object({
+      name: z.literal("Struktur Pengajaran"),
       score: z.number(),
       comment: z.string(),
     }),
